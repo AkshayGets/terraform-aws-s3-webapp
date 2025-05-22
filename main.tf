@@ -87,3 +87,18 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "example" {
     }
   }
 }
+
+data "http" "s3_endpoint_check" {
+  url = "http://${aws_s3_bucket_website_configuration.bucket.website_endpoint}"
+
+  request_headers = {
+    Accept = "text/html"
+  }
+}
+
+check "s3_endpoint_available" {
+  assert {
+    condition     = data.http.s3_endpoint_check.status_code == 200
+    error_message = "S3 website endpoint did not return HTTP 200."
+  }
+}
