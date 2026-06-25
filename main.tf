@@ -7,6 +7,14 @@ resource "aws_s3_bucket" "bucket" {
   force_destroy = true
 }
 
+# Added to enforce that versioning is disabled (Suspended) by default
+resource "aws_s3_bucket_versioning" "bucket_versioning" {
+  bucket = aws_s3_bucket.bucket.id
+  versioning_configuration {
+    status = "Suspended"
+  }
+}
+
 resource "aws_s3_bucket_public_access_block" "bucket" {
   bucket = aws_s3_bucket.bucket.id
 
